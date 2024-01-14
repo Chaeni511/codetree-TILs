@@ -42,7 +42,7 @@ public class Main {
         int col = 1;
         int dir = 0;
 
-        for (int TC = 0; TC < m; TC++) {
+        for (int tc = 0; tc < m; tc++) {
             // 격자판을 벗어났다면
             if (row < 0 || row > n || col < 0 || col > n) {
                 dir = (dir + 2) % 4;
@@ -59,23 +59,14 @@ public class Main {
             if (dir < 0) {
                 dir += 4;
             }
-            
-            Boolean dirOk = false;
-            while(!dirOk) {
-                int tr = (row + dr[dir]) % 4;
-                int tc = (col + dc[dir]) % 4;
-                if (tr < 0 || tc < 0 || tr >= n || tc >= n) {
-                    dir = (dir + 2) % 4;
-                    // driOk = true
-                } 
-                else {
-                    dirOk = true;
-                }
-                
-            }
             // System.out.println("dir");
             // System.out.println(dir);
 
+            // 해당 방향으로 진행 가능한지 확인
+            while(!checkDir(row, col, dir)) {
+                dir = (dir + 2) % 4;
+            }
+            
             // 주사위 굴리기
             roll(dir);
             
@@ -160,6 +151,17 @@ public class Main {
             return -1;
         }
         return 0;
+    }
+
+    // 방향 전환 후 진행 가는 여부 확인
+    public static Boolean checkDir(int i, int j, int d) {
+        int ni = (i + dr[d]) % 4;
+        int nj = (j + dc[d]) % 4;
+
+        if (ni < 0 || nj < 0 || ni > n || nj > n) {
+            return false;
+        }
+        return true;
     }
 
     // 주사위 굴리기
