@@ -42,7 +42,7 @@ public class Main {
         int col = 1;
         int dir = 0;
 
-        for (int tc = 0; tc < m; tc++) {
+        for (int TC = 0; TC < m; TC++) {
             // 격자판을 벗어났다면
             if (row < 0 || row > n || col < 0 || col > n) {
                 dir = (dir + 2) % 4;
@@ -54,10 +54,24 @@ public class Main {
             // System.out.println("answer: ");
             // System.out.println(answer);
 
+            Boolean dirOk = false;
             // 진행방향 전환
-            dir = (dir + changeDir(row, col)) % 4;
-            if (dir < 0) {
-                dir += 4;
+            while(!dirOk) {
+                dir = (dir + changeDir(row, col)) % 4;
+                if (dir < 0) {
+                    dir += 4;
+                }
+                
+                int tr = (row + dr[dir]) % 4;
+                int tc = (col + dc[dir]) % 4;
+                if (tr < 0 || tc < 0 || tr >= n || tc >= n) {
+                    dir = (dir + 2) % 4;
+                    // driOk = true
+                } 
+                else {
+                    dirOk = true;
+                }
+                
             }
             // System.out.println("dir");
             // System.out.println(dir);
