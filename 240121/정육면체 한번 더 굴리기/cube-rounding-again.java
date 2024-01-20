@@ -46,26 +46,22 @@ public class Main {
 
         for (int tc = 0; tc < m; tc++) {
             // 격자판을 벗어났다면
-            if (row < 0 || row > n || col < 0 || col > n
-                || row+dr[dir] < 0 || row+dr[dir] > n 
-                || col + dc[dir] < 0 || col + dc[dir] > 0
-            ) {
-                dir = (dir + 2) % 4;
-                // System.out.println("여기 오나??");
-            }
+            // if (
+            //     row + dr[dir] < 0 || row + dr[dir] > n 
+            //     || col + dc[dir] < 0 || col + dc[dir] > 0
+            // ) {
+            //     dir = (dir + 2) % 4;
+            //     // System.out.println("여기 오나??");
+            // }
             
             // 점수 얻기
             answer += bfs(row, col, 0);
-            // System.out.println("answer: ");
-            // System.out.println(answer);
 
             // 진행방향 전환
             dir = (dir + changeDir(row, col)) % 4;
             if (dir < 0) {
                 dir += 4;
             }
-            // System.out.println("dir");
-            // System.out.println(dir);
 
             // 해당 방향으로 진행 가능한지 확인
             while(!checkDir(row, col, dir)) {
@@ -84,14 +80,8 @@ public class Main {
             if (col < 0) {
                 col += n;
             }
-            // System.out.println("row");
-            // System.out.println(row);
-            // System.out.println("col");
-            // System.out.println(col);
-            // System.out.println("==========");
-
-            
         } 
+
         System.out.println(answer);
     }
 
@@ -100,54 +90,37 @@ public class Main {
     public static Integer bfs (int i, int j, int res) {
         q.add(new int[] {i, j});
         int num = board[i][j];
-        // System.out.println("===res===");
-        // System.out.println(res);
 
         int[][] visited = new int[n][n];
-
-        // System.out.println(num);
-        // System.out.println(!q.isEmpty());
         
         while (!q.isEmpty()) {
             int[]tmp = q.poll();
             int r = tmp[0];
             int c = tmp[1];
 
-            visited[r][c] = 1;
             if (board[r][c] != num) {
                 continue;
             }
+
             res += num;
-            // System.out.println("***res***");
-            // System.out.println(res);
-            // System.out.println("===r & c===");
-            // System.out.println(r);
-            // System.out.println(c);
+            visited[r][c] = 1;
 
             for (int d = 0; d < 4; d++) {
                 int nr = r + dr[d];
                 int nc = c + dc[d];
-                // System.out.println("===nr & nc===");
-                // System.out.println(nr);
-                // System.out.println(nc);
-
 
                 if (nr >= 0 && nr < n && nc >= 0 && nc < n && visited[nr][nc] == 0) {
-                    // System.out.println("큐에 추가했음!");
                     q.add(new int[] {nr, nc});
                 }
             }
         }
-        // System.out.println("===res===");
-        // System.out.println(res);
         return res;
     }
 
     // 방향 전환
     public static int changeDir(int i, int j) {
         int bottom = Math.abs(7 - dice[0]);
-        // System.out.println("bottom: " + String.valueOf(bottom));
-        // System.out.println("board: " + String.valueOf(board[i][j]));
+       
         // 주사위의 아랫면이 보드의 해당 칸에 있는 숫자보다 크면 90' 시계방향
         if (bottom > board[i][j]) {
             return 1;
@@ -160,8 +133,8 @@ public class Main {
 
     // 방향 전환 후 진행 가는 여부 확인
     public static Boolean checkDir(int i, int j, int d) {
-        int ni = (i + dr[d]) % 4;
-        int nj = (j + dc[d]) % 4;
+        int ni = i + dr[d];
+        int nj = j + dc[d];
 
         if (ni < 0 || nj < 0 || ni > n || nj > n) {
             return false;
