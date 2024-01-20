@@ -18,8 +18,6 @@ public class Main {
     // 뱡향
     static int dir = 0;
 
-    // 반시계 방향 -1 시계 방향 1
-    static int dirTo = 0;
     // 큐
     static Queue<int[]> q = new ArrayDeque<int[]>();
 
@@ -50,47 +48,27 @@ public class Main {
         int col = 1;
 
         for (int tc = 0; tc < m; tc++) {
-            // 격자판을 벗어났다면
-            // if (
-            //     row + dr[dir] < 0 || row + dr[dir] > n 
-            //     || col + dc[dir] < 0 || col + dc[dir] > 0
-            // ) {
-            //     dir = (dir + 2) % 4;
-            //     // System.out.println("여기 오나??");
-            // }
             
             // 점수 얻기
             answer += bfs(row, col, 0);
 
             // 진행방향 전환
             dir = (dir + changeDir(row, col)) % 4;
-            dir = dir % 4;
             if (dir < 0) {
                 dir += 4;
             }
 
             // 해당 방향으로 진행 가능한지 확인
-            while(!checkDir(row, col, dir)) {
+            if(!checkDir(row, col, dir)) {
                 dir = (dir + 2) % 4;
-
-                // dir = dir % 4;
-                // if(dir < 0) {
-                //     dir += 4;
-                // } 
             }
             
             // 주사위 굴리기
             roll(dir);
             
-            row = (row + dr[dir]) % 4;
-            col = (col + dc[dir]) % 4;
+            row = row + dr[dir];
+            col = col + dc[dir];
 
-            if (row < 0) {
-                row += n;
-            }
-            if (col < 0) {
-                col += n;
-            }
         } 
 
         System.out.println(answer);
@@ -130,15 +108,13 @@ public class Main {
 
     // 방향 전환
     public static int changeDir(int i, int j) {
-        int bottom = Math.abs(7 - dice[0]);
+        int bottom = 7 - dice[0];
        
         // 주사위의 아랫면이 보드의 해당 칸에 있는 숫자보다 크면 90' 시계방향
         if (bottom > board[i][j]) {
-            dirTo = 1;
             return 1;
         // 더 작다면 현재 진행방향에서 90' 반시계방향
         } else if (bottom < board[i][j]) {
-            dirTo = -1;
             return -1;
         }
         return 0;
@@ -149,7 +125,7 @@ public class Main {
         int ni = i + dr[d];
         int nj = j + dc[d];
 
-        if (ni < 0 || nj < 0 || ni > n || nj > n) {
+        if (ni < 0 || nj < 0 || ni >= n || nj >= n) {
             return false;
         }
         return true;
