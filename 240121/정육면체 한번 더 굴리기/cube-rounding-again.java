@@ -6,7 +6,7 @@ import java.util.*;
 public class Main {
     static int n;
     static int m;
-    
+
     static int[][] board;
     static int[] dice = {4, 2, 3, 5, 6, 1};
 
@@ -46,7 +46,10 @@ public class Main {
 
         for (int tc = 0; tc < m; tc++) {
             // 격자판을 벗어났다면
-            if (row < 0 || row > n || col < 0 || col > n) {
+            if (row < 0 || row > n || col < 0 || col > n
+                || row+dr[dir] < 0 || row+dr[dir] > n 
+                || col + dc[dir] < 0 || col + dc[dir] > 0
+            ) {
                 dir = (dir + 2) % 4;
                 // System.out.println("여기 오나??");
             }
