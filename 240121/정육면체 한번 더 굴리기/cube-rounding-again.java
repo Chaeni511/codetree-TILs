@@ -58,9 +58,11 @@ public class Main {
                 dir += 4;
             }
 
+            System.out.println(dir);
             // 해당 방향으로 진행 가능한지 확인
             if(!checkDir(row, col, dir)) {
                 dir = (dir + 2) % 4;
+                System.out.println(dir);
             }
             
             // 주사위 굴리기
@@ -81,6 +83,7 @@ public class Main {
         int num = board[i][j];
 
         int[][] visited = new int[n][n];
+        visited[i][j] = 1;
         
         while (!q.isEmpty()) {
             int[]tmp = q.poll();
@@ -92,13 +95,13 @@ public class Main {
             }
 
             res += num;
-            visited[r][c] = 1;
 
             for (int d = 0; d < 4; d++) {
                 int nr = r + dr[d];
                 int nc = c + dc[d];
 
                 if (nr >= 0 && nr < n && nc >= 0 && nc < n && visited[nr][nc] == 0) {
+                    visited[nr][nc] = 1;
                     q.add(new int[] {nr, nc});
                 }
             }
