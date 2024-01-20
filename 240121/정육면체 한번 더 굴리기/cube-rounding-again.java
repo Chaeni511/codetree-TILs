@@ -71,6 +71,7 @@ public class Main {
             // 해당 방향으로 진행 가능한지 확인
             while(!checkDir(row, col, dir)) {
                 dir = (dir + 2) % 4;
+                dir += dirTo;       
             }
             
             // 주사위 굴리기
@@ -144,7 +145,6 @@ public class Main {
         int nj = j + dc[d];
 
         if (ni < 0 || nj < 0 || ni > n || nj > n) {
-            dir += dirTo;
             return false;
         }
         return true;
