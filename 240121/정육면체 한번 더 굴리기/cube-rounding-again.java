@@ -64,14 +64,16 @@ public class Main {
 
             // 진행방향 전환
             dir = (dir + changeDir(row, col)) % 4;
-            if (dir < 0) {
-                dir += 4;
-            }
+            
 
             // 해당 방향으로 진행 가능한지 확인
             while(!checkDir(row, col, dir)) {
                 dir = (dir + 2) % 4;
-                dir += dirTo;       
+                dir += dirTo;      
+                dir = dir % 4;
+                if(dir < 0) {
+                    dir += 4;
+                } 
             }
             
             // 주사위 굴리기
