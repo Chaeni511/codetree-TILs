@@ -58,11 +58,9 @@ public class Main {
                 dir += 4;
             }
 
-            System.out.println(dir);
             // 해당 방향으로 진행 가능한지 확인
             if(!checkDir(row, col, dir)) {
                 dir = (dir + 2) % 4;
-                System.out.println(dir);
             }
             
             // 주사위 굴리기
