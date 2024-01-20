@@ -69,11 +69,9 @@ public class Main {
                 dir += 4;
             }
 
-            System.out.println(dir);
             // 해당 방향으로 진행 가능한지 확인
             while(!checkDir(row, col, dir)) {
                 dir = (dir + 2) % 4;
-                System.out.println(dir);
 
                 // dir = dir % 4;
                 // if(dir < 0) {
