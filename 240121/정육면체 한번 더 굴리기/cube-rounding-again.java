@@ -64,16 +64,21 @@ public class Main {
 
             // 진행방향 전환
             dir = (dir + changeDir(row, col)) % 4;
-            
+            dir = dir % 4;
+            if (dir < 0) {
+                dir += 4;
+            }
 
+            System.out.println(dir);
             // 해당 방향으로 진행 가능한지 확인
             while(!checkDir(row, col, dir)) {
                 dir = (dir + 2) % 4;
-                dir += dirTo;      
-                dir = dir % 4;
-                if(dir < 0) {
-                    dir += 4;
-                } 
+                System.out.println(dir);
+
+                // dir = dir % 4;
+                // if(dir < 0) {
+                //     dir += 4;
+                // } 
             }
             
             // 주사위 굴리기
@@ -131,11 +136,11 @@ public class Main {
        
         // 주사위의 아랫면이 보드의 해당 칸에 있는 숫자보다 크면 90' 시계방향
         if (bottom > board[i][j]) {
-            dirTo = -1;
+            dirTo = 1;
             return 1;
         // 더 작다면 현재 진행방향에서 90' 반시계방향
         } else if (bottom < board[i][j]) {
-            dirTo = 1;
+            dirTo = -1;
             return -1;
         }
         return 0;
