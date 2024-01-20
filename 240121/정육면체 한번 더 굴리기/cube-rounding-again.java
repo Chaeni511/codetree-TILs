@@ -3,6 +3,7 @@ import java.io.InputStreamReader;
 
 import java.util.*;
 
+
 public class Main {
     static int n;
     static int m;
@@ -14,6 +15,11 @@ public class Main {
     static int[] dr = {0, 1, 0, -1};
     static int[] dc = {1, 0, -1, 0};
 
+    // 뱡향
+    static int dir = 0;
+
+    // 반시계 방향 -1 시계 방향 1
+    static int dirTo = 0;
     // 큐
     static Queue<int[]> q = new ArrayDeque<int[]>();
 
@@ -42,7 +48,6 @@ public class Main {
         int answer = 0;
         int row = 0;
         int col = 1;
-        int dir = 0;
 
         for (int tc = 0; tc < m; tc++) {
             // 격자판을 벗어났다면
@@ -123,9 +128,11 @@ public class Main {
        
         // 주사위의 아랫면이 보드의 해당 칸에 있는 숫자보다 크면 90' 시계방향
         if (bottom > board[i][j]) {
+            dirTo = -1;
             return 1;
         // 더 작다면 현재 진행방향에서 90' 반시계방향
         } else if (bottom < board[i][j]) {
+            dirTo = 1;
             return -1;
         }
         return 0;
@@ -137,6 +144,7 @@ public class Main {
         int nj = j + dc[d];
 
         if (ni < 0 || nj < 0 || ni > n || nj > n) {
+            dir += dirTo;
             return false;
         }
         return true;
