@@ -106,7 +106,10 @@ public class Main {
                         int nj = j + h * hj[d];
 
                         if (0 <= ni && 0 <= nj && ni < n && nj < n) {
-                            if (tmpLand[ni][nj] > 0) {
+                            if (
+                                tmpLand[ni][nj] > 0
+                                && herbicide[ni][nj] >= 0
+                            ) {
                                 killCnt += tmpLand[ni][nj];
                             }
                         }
