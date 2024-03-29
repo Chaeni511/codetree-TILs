@@ -1,179 +1,177 @@
-import java.util.Scanner;
+import java.util.*;
+import java.io.*;
 
 public class Main {
-    public static final int DIR_NUM = 4;
-    public static final int MAX_N = 20;
-    
-    public static int n, m, k, c;
-    public static int[][] tree = new int[MAX_N + 1][MAX_N + 1];
-    public static int[][] addTree = new int[MAX_N + 1][MAX_N + 1];
-    public static int[][] herb = new int[MAX_N + 1][MAX_N + 1];
-    
-    public static int ans;
-    
-    public static boolean isOutRange(int x, int y) {
-        return !(1 <= x && x <= n && 1 <= y && y <= n);
-    }
-    
-    // 입력을 받는 등 초기 작업을 합니다.
-    public static void init() {
-        Scanner sc = new Scanner(System.in);
+    static int answer = 0;
+
+    static int n;
+    static int m;
+    static int k;
+    static int c;
+    static int[][] land;
+    static int[][] herbicide;
+
+    static int[] ti= {-1, 0, 1, 0};
+    static int[] tj= {0, -1, 0, 1};
+    static int[] hi= {-1, -1, 1, 1};
+    static int[] hj= {-1, 1, 1, -1};
+
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st0 = new StringTokenizer(br.readLine());
+
+        n = Integer.parseInt(st0.nextToken());
+        m = Integer.parseInt(st0.nextToken());
+        k = Integer.parseInt(st0.nextToken());
+        c = Integer.parseInt(st0.nextToken());
+
+        land = new int[n][n];
+        herbicide = new int[n][n];
         
-        n = sc.nextInt();
-        m = sc.nextInt();
-        k = sc.nextInt();
-        c = sc.nextInt();
-        
-        for(int i = 1; i <= n; i++)
-            for(int j = 1; j <= n; j++)
-                tree[i][j] = sc.nextInt();
-    }
-    
-    // 1단계 : 인접한 네 개의 칸 중 나무가 있는 칸의 수만큼 나무가 성장합니다.
-    public static void stepOne() {
-        int[] dx = new int[]{-1,  0, 1, 0};
-        int[] dy = new int[]{ 0, -1, 0, 1};
-    
-        for(int i = 1; i <= n; i++)
-            for(int j = 1; j <= n; j++) {
-                if(tree[i][j] <= 0) continue;
-    
-                // 나무가 있는 칸의 수(cnt)만큼 나무가 성장합니다.
-                int cnt = 0;
-                for(int dir = 0; dir < 4; dir++) {
-                    int nx = i + dx[dir];
-                    int ny = j + dy[dir];
-                    if(isOutRange(nx, ny)) continue;
-                    if(tree[nx][ny] > 0) cnt++;
-                }
-                tree[i][j] += cnt;
+        for (int i = 0; i < n; i++) {
+            StringTokenizer st1 = new StringTokenizer(br.readLine());
+            for (int j = 0; j < n; j++) {
+                land[i][j] = Integer.parseInt(st1.nextToken());
             }
+        }
+
+        for(int mm = 0; mm < m; mm++) {
+            land = grow();
+
+            herbicideResistance();
+
+            herbicide();
+        }
+
+        System.out.println(answer);
     }
-    
-    // 2단계 : 기존에 있었던 나무들은 아무것도 없는 칸에 번식을 진행합니다.
-    public static void stepTwo() {
-        int[] dx = new int[]{-1,  0, 1, 0};
-        int[] dy = new int[]{ 0, -1, 0, 1};
-    
-        // 모든 나무에서 동시에 일어나는 것을 구현하기 위해 하나의 배열을 더 이용합니다.
-        // addTree를 초기화해줍니다.
-        for(int i = 1; i <= n; i++)
-            for(int j = 1; j <= n; j++) 
-                addTree[i][j] = 0;
-    
-        for(int i = 1; i <= n; i++)
-            for(int j = 1; j <= n; j++) {
-                if(tree[i][j] <= 0) continue;
-    
-                // 해당 나무와 인접한 나무 중 아무도 없는 칸의 개수를 찾습니다.
-                int cnt = 0;
-                for(int dir = 0; dir < 4; dir++) {
-                    int nx = i + dx[dir];
-                    int ny = j + dy[dir];
-                    if(isOutRange(nx, ny)) continue;
-                    if(herb[nx][ny] > 0) continue;
-                    if(tree[nx][ny] == 0) cnt++;
+
+
+    // 나무의 성장과 번식
+    public static int[][] grow() {
+        int[][] tmp = new int[n][n];
+
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < n; j++) {
+                // 나무가 있는 곳 일 때
+                if(land[i][j] > 0) {
+                    
+                    int emptyCnt = 0;
+                    int treeCnt = 0;
+                    Queue<int[]> toGrow = new LinkedList<int[]>();
+                    // 델타 탐색하면서
+                    for (int d = 0; d < 4; d++) {
+                        int ni = i + ti[d];
+                        int nj = j + tj[d];
+
+                        // 범위 안인데
+                        if (0 <= ni && 0 <= nj && ni < n && nj < n){
+                            // 빈땅이면 나무가 번식
+                            if (land[ni][nj] == 0 && herbicide[ni][nj] == 0) {
+                                emptyCnt++;
+                                int[] tmpToGrow = {ni, nj};
+                                toGrow.add(tmpToGrow);
+                            // 나무가 있으면 나무가 성장
+                            } else if (land[ni][nj] > 0) {
+                                treeCnt++;
+                            }
+                            
+                        }
+                    }
+                   
+                    // 나무 성장
+                    tmp[i][j] = land[i][j] + treeCnt;
+
+                    // 나무 번식
+                    while (!toGrow.isEmpty()) {
+                        int[] next = toGrow.poll();
+                        tmp[next[0]][next[1]] += tmp[i][j] / emptyCnt;
+                    }
+
+                // 벽 표시
+                } else if (land[i][j] == -1) {
+                    tmp[i][j] = -1;
                 }
-    
-                // 인접한 나무 중 아무도 없는 칸은 cnt로 나눠준 만큼 번식합니다.
-                for(int dir = 0; dir < 4; dir++) {
-                    int nx = i + dx[dir];
-                    int ny = j + dy[dir];
-                    if(isOutRange(nx, ny)) continue;
-                    if(herb[nx][ny] > 0) continue;
-                    if(tree[nx][ny] == 0) addTree[nx][ny] += tree[i][j] / cnt;
-                }
+
             }
-        
-        // addTree를 더해 번식을 동시에 진행시킵니다.
-        for(int i = 1; i <= n; i++)
-            for(int j = 1; j <= n; j++) tree[i][j] += addTree[i][j];
+        }
+      
+        return tmp;
     }
-    
-    // 3단계 : 가장 많이 박멸되는 칸에 제초제를 뿌립니다.
-    public static void stepThree() {
-        int[] dx = new int[]{-1,  1, 1, -1};
-        int[] dy = new int[]{-1, -1, 1,  1};
-    
-        int maxDel = 0;
-        int maxX = 1;
-        int maxY = 1;
-    
-        for(int i = 1; i <= n; i++)
-            for(int j = 1; j <= n; j++) {
-                // 모든 칸에 대해 제초제를 뿌려봅니다. 각 칸에서 제초제를 뿌릴 시 박멸되는 나무의 그루 수를 계산하고,
-                // 이 값이 최대가 되는 지점을 찾아줍니다.
-                if(tree[i][j] <= 0) continue;
-                int cnt = tree[i][j];
-                for(int dir = 0; dir < 4; dir++) {
-                    int nx = i;
-                    int ny = j;
-                    for(int x = 1; x <= k; x++) {
-                        nx = nx + dx[dir];
-                        ny = ny + dy[dir];
-                        if(isOutRange(nx, ny)) break;
-                        if(tree[nx][ny] <= 0) break;
-                        cnt += tree[nx][ny];
+
+    public static void herbicide() {
+        int maxKillCnt = -1;
+        int[] maxKillLocation = {0, 0};
+
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < n; j++) {
+                // 나무가 없으면 넘어감
+                if (land[i][j] <= 0) continue;
+
+                int killCnt = land[i][j];
+                // 대각선 탐색
+                for (int d = 0; d < 4; d++) {
+                    int ni = i;
+                    int nj = j;
+                    
+                    for (int h = 1; h <= k; h++) {
+                        ni += hi[d];
+                        nj += hj[d];
+                    
+                        // 범위 밖이면 브레이크
+                        if ( 0 > ni || 0 > nj || ni >= n || nj >= n ) break;
+                        // 나무가 없거나 벽이 있으면 브레이크
+                        if (land[ni][nj] <= 0) break;
+                        
+                        killCnt += land[ni][nj];
                     }
                 }
-                if(maxDel < cnt) {
-                    maxDel = cnt;
-                    maxX = i;
-                    maxY = j;
+                // 최대값인지 확인
+                if (killCnt > maxKillCnt) {
+                    maxKillCnt = killCnt;
+                    maxKillLocation[0] = i;
+                    maxKillLocation[1] = j;
                 }
             }
-    
-        ans += maxDel;
-    
-        // 찾은 칸에 제초제를 뿌립니다.
-        if(tree[maxX][maxY] > 0) {
-            tree[maxX][maxY] = 0;
-            herb[maxX][maxY] = c;
-            for(int dir = 0; dir < 4; dir++) {
-                int nx = maxX;
-                int ny = maxY;
-                for(int x = 1; x <= k; x++) {
-                    nx = nx + dx[dir];
-                    ny = ny + dy[dir];
-                    if(isOutRange(nx, ny)) break;
-                    if(tree[nx][ny] < 0) break;
-                    if(tree[nx][ny] == 0) {
-                        herb[nx][ny] = c;
+        }
+
+        // 제초제 뿌릴 곳 확정
+        answer += maxKillCnt;
+
+        if (land[maxKillLocation[0]][maxKillLocation[1]] > 0) {
+            herbicide[maxKillLocation[0]][maxKillLocation[1]] = c;
+            land[maxKillLocation[0]][maxKillLocation[1]] = 0;
+        
+            for (int d = 0; d < 4; d++) {
+                int ni = maxKillLocation[0];
+                int nj = maxKillLocation[1];
+                for (int h = 1; h <= k; h++) {
+                    ni += hi[d];
+                    nj += hj[d];
+
+                    // 범위 밖이면 브레이크
+                    if ( 0 > ni || 0 > nj || ni >= n || nj >= n ) break;
+                    // 나무가 없거나 벽이 있으면 브레이크
+                    if (land[ni][nj] <= 0) break;
+
+                    if(land[ni][nj] == 0){
+                        herbicide[ni][nj] = c;
                         break;
                     }
-                    tree[nx][ny] = 0;
-                    herb[nx][ny] = c;
+                    herbicide[ni][nj] = c;
+                    land[ni][nj] = 0;
+                }
+            }
+        }      
+    }
+
+    public static void herbicideResistance() {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (herbicide[i][j] > 0) {
+                    herbicide[i][j] -= 1;
                 }
             }
         }
-    }
-    
-    // 제초제의 기간을 1년 감소시킵니다.
-    public static void deleteHerb() {
-        for(int i = 1; i <= n; i++)
-            for(int j = 1; j <= n; j++) 
-                if(herb[i][j] > 0) 
-                    herb[i][j] -= 1;
-    }
-
-    public static void main(String[] args) {
-        // 입력을 받는 등 초기 작업을 합니다.
-        init();
-
-        for(int i = 1; i <= m; i++) {
-            // 1단계 : 인접한 네 개의 칸 중 나무가 있는 칸의 수만큼 나무가 성장합니다.
-            stepOne();
-
-            // 2단계 : 기존에 있었던 나무들은 아무것도 없는 칸에 번식을 진행합니다.
-            stepTwo();
-
-            // 제초제의 기간을 1년 감소시킵니다.
-            deleteHerb();
-
-            // 3단계 : 가장 많이 박멸되는 칸에 제초제를 뿌립니다.
-            stepThree();
-        }
-
-        System.out.print(ans);
     }
 }
