@@ -144,9 +144,9 @@ public class Main {
         // System.out.println("maxKillCnt: "+ Integer.toString(maxKillCnt));
         // System.out.println("maxKillLocation: "+ Integer.toString(maxKillLocation[0]) + ", " + Integer.toString(maxKillLocation[1]));
         // System.out.println("herbicide =========================");
-        for (int z= 0; z < n; z++) {
-            System.out.println(Arrays.toString(herbicide[z]));
-        }
+        // for (int z= 0; z < n; z++) {
+        //     System.out.println(Arrays.toString(herbicide[z]));
+        // }
         return tmpLand;
     }
 
