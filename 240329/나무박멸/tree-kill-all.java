@@ -36,8 +36,8 @@ public class Main {
         }
 
         for(int mm = 0; mm < m; mm++) {
-            land = herbicide(grow());
             herbicideResistance();
+            land = herbicide(grow());
         }
         System.out.println(answer);
     }
@@ -86,10 +86,10 @@ public class Main {
 
             }
         }
-        System.out.println("tmp =========================");
-        for (int z= 0; z < n; z++) {
-            System.out.println(Arrays.toString(tmp[z]));
-        }
+        // System.out.println("tmp =========================");
+        // for (int z= 0; z < n; z++) {
+        //     System.out.println(Arrays.toString(tmp[z]));
+        // }
         return tmp;
 
     }
@@ -141,9 +141,9 @@ public class Main {
             }
         }
 
-        System.out.println("maxKillCnt: "+ Integer.toString(maxKillCnt));
-        System.out.println("maxKillLocation: "+ Integer.toString(maxKillLocation[0]) + ", " + Integer.toString(maxKillLocation[1]));
-        System.out.println("herbicide =========================");
+        // System.out.println("maxKillCnt: "+ Integer.toString(maxKillCnt));
+        // System.out.println("maxKillLocation: "+ Integer.toString(maxKillLocation[0]) + ", " + Integer.toString(maxKillLocation[1]));
+        // System.out.println("herbicide =========================");
         for (int z= 0; z < n; z++) {
             System.out.println(Arrays.toString(herbicide[z]));
         }
